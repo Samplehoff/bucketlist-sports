@@ -6,16 +6,46 @@ const session = require("express-session");
 require('dotenv').config();
 
 const mustacheExpress = require('mustache-express');
-app.engine('html', mustacheExpress());
-app.set('view engine', 'html');
+app.engine('mustache', mustacheExpress());
+app.set('view engine', 'mustache');
 app.set('views', __dirname + '/public');
 
 app.get('/', function(req, res){
-  res.render('index.html');
-});
+  models.stadiums.findAll({
+    where: {
+      type: "Professional"
+    }
+  }).then(stadiums =>{
+    res.render('index.mustache', {stadiums})
+  })
 
+})
 
+// app.get('/', function(req, res){
+//   // res.render('index.mustache');
+//   models.stadiums.findOne({
+//     where: {
+//       name: "Arrowhead Stadium",
+//       team: "Kansas City Chiefs"
+//     }
+    
+//   }).then(stadiums => {
+//     res.render('homepage.mustache', {stadiums})
+//   })
+// });
 
+// app.get('/', function(req, res){
+//   models.stadiums.findOne({
+//     where: {
+//       name: "Arrowhead Stadium",
+//       team: "Kansas City Chiefs"
+//     }
+    
+//   }).then(stadiums => {
+//     res.json(stadiums)
+//   })
+  
+// })
 
 // var pbkdf2 = require('pbkdf2');
 // var salt = process.env.SALT_KEY;
@@ -32,6 +62,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.static(__dirname + '/public'));
+
+
 
 /*  PASSPORT SETUP  */
 

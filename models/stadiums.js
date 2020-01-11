@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     team: DataTypes.STRING,
     type: DataTypes.STRING,
-    location: DataTypes.STRING
+    location: DataTypes.STRING,
+    sports: DataTypes.STRING
   }, {});
   stadiums.associate = function(models) {
     // associations can be defined here
