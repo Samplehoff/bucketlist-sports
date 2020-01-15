@@ -180,3 +180,7 @@
     float: center;
     align-items: center;
 }
+
+#render {
+  padding: 10px;
+}

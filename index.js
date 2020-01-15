@@ -5,20 +5,71 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 require('dotenv').config();
 
+
+
 const mustacheExpress = require('mustache-express');
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', __dirname + '/public');
 
-app.get('/', function(req, res){
+app.get('/professional', function(req, res){
+  
   models.stadiums.findAll({
     where: {
       type: "Professional"
     }
-  }).then(stadiums =>{
-    res.render('index.mustache', {stadiums})
-  })
 
+  }).then(stadiums => {
+    res.render('testprofessional', {stadiums})
+  })
+})
+
+app.get('/', function(req,res){
+  res.render('testindex.mustache')
+})
+
+
+app.get('/college', function(req, res){
+  models.stadiums.findAll({
+    where: {
+      type: "College"
+    }
+  }).then(stadiums => {
+    res.render('testcollege.mustache', {stadiums})
+  })
+})
+
+app.get('/mlb', function (req, res) {
+  models.stadiums.findAll({
+    where: {
+      type: "Professional",
+      sports: "baseball"
+    }
+  }).then(stadiums => {
+    res.render('testmlb.mustache', {stadiums})
+  })
+})
+
+app.get('/nba', function(req, res){
+  models.stadiums.findAll({
+    where: {
+      type: "Professional",
+      sports: "basketball"
+    }
+  }).then(stadiums =>{
+    res.render('testnba.mustache', {stadiums})
+  })
+})
+
+app.get('/nhl', function(req, res){
+  models.stadiums.findAll({
+    where: {
+      type: "Professional",
+      sports: "hockey"
+    }
+  }).then(stadiums =>{
+    res.render('testnhl.mustache', {stadiums})
+  })
 })
 
 // app.get('/', function(req, res){

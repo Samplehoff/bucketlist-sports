@@ -9,12 +9,24 @@
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
+{{#stadiums}}
+<div id="render" >
+    <div class="card text-white bg-dark mb-3"  style="max-width: 540px;">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+        </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">{{name}}</h5>
+                <p class="card-text">{{team}}</p>
+                <p class="card-text">{{location}}</p>
+            </div>
+        </div>
+              
+    </div>
+</div>
+{{/stadiums}}
 
-<a href="/professional">Professional</a>
-<a href="/college">College</a>
-<a href="/mlb">MLB</a>
-<a href="/nba">NBA</a>
-<a href="/nhl">NHL</a>
 
 
 
