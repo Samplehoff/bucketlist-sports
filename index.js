@@ -6,6 +6,40 @@ const session = require("express-session");
 require('dotenv').config();
 
 
+var mustacheExpress = require('mustache-express');
+app.engine('mustache', mustacheExpress());
+app.set('view engine', 'mustache');
+app.set('views', __dirname + '/public');
+
+app.get('/', function(req, res){
+  res.render('index.mustache');
+});
+
+app.get('/bucketlist', function(req, res){
+  res.render('bucketlist.mustache');
+});
+
+app.get('/proffesional', function(req, res){
+  res.render('proffesional.mustache');
+});
+
+// var pbkdf2 = require('pbkdf2');
+// var salt = process.env.SALT_KEY;
+
+// function encryptionPassword(password){
+//   var key = pbkdf2.pbkdf2Sync(
+//     password, salt, 36000, 256, 'sha256'
+//   );
+//   var hash = key.toString('hex');
+//   return hash;
+// }
+app.use(session({secret: "dogs", resave: false, saveUninitialized: true}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(express.static(__dirname + '/public'));
+
+// /*  PASSPORT SETUP  */
 
 const mustacheExpress = require('mustache-express');
 app.engine('mustache', mustacheExpress());
@@ -130,6 +164,13 @@ app.use(express.static(__dirname + '/public'));
 //   }
 //   });
 
+// //   app.get('/create_artist', function(req, res){ 
+// //     if (req.isAuthenticated()) {
+// //       res.redirect('create_artist');
+// //     } else {
+// //       res.send("not authorized.");
+// //     }
+// //     });
 //   app.get('/create_artist', function(req, res){ 
 //     if (req.isAuthenticated()) {
 //       res.redirect('create_artist');
