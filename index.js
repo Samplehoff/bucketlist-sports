@@ -4,6 +4,8 @@ const models = require('./models');
 const bodyParser = require("body-parser");
 const session = require("express-session");
 require('dotenv').config();
+const axios = require("axios");
+
 
 
 
@@ -12,15 +14,19 @@ app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', __dirname + '/public');
 
+
+
 app.get('/professional', function(req, res){
   
   models.stadiums.findAll({
     where: {
-      type: "Professional"
+      type: "Professional",
+      sports: "football"
     }
 
   }).then(stadiums => {
-    res.render('testprofessional', {stadiums})
+      res.json(stadiums)
+    // res.render('testprofessional', {stadiums})
   })
 })
 
@@ -72,31 +78,7 @@ app.get('/nhl', function(req, res){
   })
 })
 
-// app.get('/', function(req, res){
-//   // res.render('index.mustache');
-//   models.stadiums.findOne({
-//     where: {
-//       name: "Arrowhead Stadium",
-//       team: "Kansas City Chiefs"
-//     }
-    
-//   }).then(stadiums => {
-//     res.render('homepage.mustache', {stadiums})
-//   })
-// });
 
-// app.get('/', function(req, res){
-//   models.stadiums.findOne({
-//     where: {
-//       name: "Arrowhead Stadium",
-//       team: "Kansas City Chiefs"
-//     }
-    
-//   }).then(stadiums => {
-//     res.json(stadiums)
-//   })
-  
-// })
 
 // var pbkdf2 = require('pbkdf2');
 // var salt = process.env.SALT_KEY;
