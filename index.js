@@ -41,6 +41,117 @@ app.use(express.static(__dirname + '/public'));
 
 // /*  PASSPORT SETUP  */
 
+const mustacheExpress = require('mustache-express');
+app.engine('mustache', mustacheExpress());
+app.set('view engine', 'mustache');
+app.set('views', __dirname + '/public');
+
+app.get('/professional', function(req, res){
+  
+  models.stadiums.findAll({
+    where: {
+      type: "Professional"
+    }
+
+  }).then(stadiums => {
+    res.render('testprofessional', {stadiums})
+  })
+})
+
+app.get('/', function(req,res){
+  res.render('testindex.mustache')
+})
+
+
+app.get('/college', function(req, res){
+  models.stadiums.findAll({
+    where: {
+      type: "College"
+    }
+  }).then(stadiums => {
+    res.render('testcollege.mustache', {stadiums})
+  })
+})
+
+app.get('/mlb', function (req, res) {
+  models.stadiums.findAll({
+    where: {
+      type: "Professional",
+      sports: "baseball"
+    }
+  }).then(stadiums => {
+    res.render('testmlb.mustache', {stadiums})
+  })
+})
+
+app.get('/nba', function(req, res){
+  models.stadiums.findAll({
+    where: {
+      type: "Professional",
+      sports: "basketball"
+    }
+  }).then(stadiums =>{
+    res.render('testnba.mustache', {stadiums})
+  })
+})
+
+app.get('/nhl', function(req, res){
+  models.stadiums.findAll({
+    where: {
+      type: "Professional",
+      sports: "hockey"
+    }
+  }).then(stadiums =>{
+    res.render('testnhl.mustache', {stadiums})
+  })
+})
+
+// app.get('/', function(req, res){
+//   // res.render('index.mustache');
+//   models.stadiums.findOne({
+//     where: {
+//       name: "Arrowhead Stadium",
+//       team: "Kansas City Chiefs"
+//     }
+    
+//   }).then(stadiums => {
+//     res.render('homepage.mustache', {stadiums})
+//   })
+// });
+
+// app.get('/', function(req, res){
+//   models.stadiums.findOne({
+//     where: {
+//       name: "Arrowhead Stadium",
+//       team: "Kansas City Chiefs"
+//     }
+    
+//   }).then(stadiums => {
+//     res.json(stadiums)
+//   })
+  
+// })
+
+// var pbkdf2 = require('pbkdf2');
+// var salt = process.env.SALT_KEY;
+
+// function encryptionPassword(password){
+//   var key = pbkdf2.pbkdf2Sync(
+//     password, salt, 36000, 256, 'sha256'
+//   );
+//   var hash = key.toString('hex');
+//   return hash;
+// }
+// app.use(session({secret: "dogs", resave: false, saveUninitialized: true}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(express.static(__dirname + '/public'));
+
+
+
+/*  PASSPORT SETUP  */
+
 // const passport = require('passport');
 // app.use(passport.initialize());
 // app.use(passport.session());
@@ -60,6 +171,13 @@ app.use(express.static(__dirname + '/public'));
 // //       res.send("not authorized.");
 // //     }
 // //     });
+//   app.get('/create_artist', function(req, res){ 
+//     if (req.isAuthenticated()) {
+//       res.redirect('create_artist');
+//     } else {
+//       res.send("not authorized.");
+//     }
+//     });
 
 
 // app.get('/logout', function(req, res){
@@ -125,6 +243,8 @@ app.use(express.static(__dirname + '/public'));
       
 //     });
 // });
+
+
 
 
 

@@ -215,3 +215,6 @@
 
 .form-elegant .modal-body, .form-elegant .modal-footer {
   font-weight: 400; }
+#render {
+  padding: 10px;
+}
