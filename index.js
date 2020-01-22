@@ -7,37 +7,10 @@ require('dotenv').config();
 const axios = require("axios");
 
 
-
-
-
-
-
-
-
 const mustacheExpress = require('mustache-express');
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', __dirname + '/public');
-
-// app.get('/', function(req, res){
-//   res.render('index.mustache');
-// });
-
-// app.get('/bucketlist', function(req, res){
-//   res.render('bucketlist.mustache');
-// });
-
-// app.get('/professional', function(req, res){
-//   models.stadiums.findAll({
-//     where:{
-//       type: "Professional"
-//     }
-//   }).then(stadiums =>{
-//     res.render('professional.mustache');
-//   })
-  
-// });
-
 
 
 app.get('/all', function(req, res){
@@ -224,7 +197,14 @@ app.use(express.static(__dirname + '/public'));
 //     });
 // });
 
-
+app.post("/bucketlist", function (req, res){
+  models.bucketlist.create({
+    
+  })
+    .then(function (bucketlist) {
+      res.redirect('mybucketlist.mustache')
+    })
+})
 
 
 

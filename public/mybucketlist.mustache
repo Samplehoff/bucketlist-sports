@@ -230,27 +230,7 @@
     <script src="pages.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-    {{#stadiums}}
-    <div id="card"
-      <div class="flip-card">
-          <div class="flip-card-inner">
-              <div class="flip-card-front">
-                  <img src="{{photo}}" style="width:300px;height:300px;">
-              </div>
-              <div class="flip-card-back">
-                <h1>{{name}}</h1>
-                <p>{{team}}</p>
-                <p>{{location}}</p>
-                <p>{{sports}}</p>
-                <form action="/bucketlist" method="post">
-                    <button type="button" class="btn btn-primary">Bucketlist</button>
-                    <input type="hidden" value="{{name}}" name="Stadium" />
-                </form>    
-              </div>
-          </div>
-      </div>
-    </div>  
-    {{/stadiums}}   
+   
 
   </body>
 </html>
