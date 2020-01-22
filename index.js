@@ -40,7 +40,21 @@ app.set('views', __dirname + '/public');
 
 
 
-app.get('/professional', function(req, res){
+app.get('/all', function(req, res){
+  
+  models.stadiums.findAll({
+    
+
+  }).then(stadiums => { 
+     res.render('all.mustache', {stadiums})
+  })
+})
+
+app.get('/', function(req,res){
+  res.render('bucketlist.mustache')
+})
+
+app.get('/nfl', function(req, res){
   
   models.stadiums.findAll({
     where: {
@@ -48,16 +62,10 @@ app.get('/professional', function(req, res){
       sports: "football"
     }
 
-  }).then(stadiums => {
-      console.log(stadiums)
-     //res.render('testprofessional', {stadiums})
+  }).then(stadiums => { 
+     res.render('nfl.mustache', {stadiums})
   })
 })
-
-app.get('/', function(req,res){
-  res.render('testindex.mustache')
-})
-
 
 app.get('/college', function(req, res){
   models.stadiums.findAll({
@@ -65,7 +73,7 @@ app.get('/college', function(req, res){
       type: "College"
     }
   }).then(stadiums => {
-    res.render('testcollege.mustache', {stadiums})
+    res.render('college.mustache', {stadiums})
   })
 })
 
@@ -76,7 +84,7 @@ app.get('/mlb', function (req, res) {
       sports: "baseball"
     }
   }).then(stadiums => {
-    res.render('testmlb.mustache', {stadiums})
+    res.render('mlb.mustache', {stadiums})
   })
 })
 
@@ -87,7 +95,7 @@ app.get('/nba', function(req, res){
       sports: "basketball"
     }
   }).then(stadiums =>{
-    res.render('testnba.mustache', {stadiums})
+    res.render('nba.mustache', {stadiums})
   })
 })
 
@@ -98,7 +106,7 @@ app.get('/nhl', function(req, res){
       sports: "hockey"
     }
   }).then(stadiums =>{
-    res.render('testnhl.mustache', {stadiums})
+    res.render('nhl.mustache', {stadiums})
   })
 })
 
