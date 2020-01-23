@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "postgres",
-    "password": null,
-    "database": "bucketlist-db",
-    "host": "127.0.0.1",
+    "username": "rziewwpj",
+    "password": "teTnJ8O1CAdLlVxt6RVC3CF6OlekCg5H",
+    "database": "rziewwpj",
+    "host": "otto.db.elephantsql.com",
     "dialect": "postgres",
     "operatorsAliases": false
   },
@@ -18,7 +18,7 @@
   "production": {
     "username": "postgres",
     "password": null,
-    "database": "bucketlist-db",
+    "database": "bucketlist",
     "host": "localhost",
     "dialect": "postgres",
     "operatorsAliases": false
