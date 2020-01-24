@@ -13,6 +13,7 @@ app.set('view engine', 'mustache');
 app.set('views', __dirname + '/public');
 
 
+
 app.get('/all', function(req, res){
   
   models.stadiums.findAll({
@@ -25,6 +26,10 @@ app.get('/all', function(req, res){
 
 app.get('/', function(req,res){
   res.render('bucketlist.mustache')
+})
+
+app.get('/mybucketlist', function(req, res){
+  res.render('mybucketlist.mustache')
 })
 
 app.get('/nfl', function(req, res){
@@ -85,17 +90,17 @@ app.get('/nhl', function(req, res){
 
 
 
-// var pbkdf2 = require('pbkdf2');
-// var salt = process.env.SALT_KEY;
+var pbkdf2 = require('pbkdf2');
+var salt = process.env.SALT_KEY;
 
-// function encryptionPassword(password){
-//   var key = pbkdf2.pbkdf2Sync(
-//     password, salt, 36000, 256, 'sha256'
-//   );
-//   var hash = key.toString('hex');
-//   return hash;
-// }
-// app.use(session({secret: "dogs", resave: false, saveUninitialized: true}));
+function encryptionPassword(password){
+  var key = pbkdf2.pbkdf2Sync(
+    password, salt, 36000, 256, 'sha256'
+  );
+  var hash = key.toString('hex');
+  return hash;
+}
+app.use(session({secret: "dogs", resave: false, saveUninitialized: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -189,15 +194,17 @@ app.use(express.static(__dirname + '/public'));
 
 
 
-// app.post("/sign-up", function (req, response) {
-//   models.user.create({ username: req.body.username, password: encryptionPassword(req.body.password)})
-//     .then(function (user) {
-//       response.redirect('/');
+app.post("/sign-up", function (req, response) {
+   models.user.create({ userName: req.body.userName, password: encryptionPassword(req.body.password)})
+    .then(function (user) {
+      response.redirect('/');
       
-//     });
-// });
+    });
+});
 
-app.post("/bucketlist", function (req, res){
+
+
+app.post("/mybucketlist", function (req, res){
   models.bucketlist.create({
     
   })
