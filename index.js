@@ -70,6 +70,16 @@ app.get('/bucketlist', function(req, res){
 });
 
 
+
+passport.serializeUser((user,done)=> {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done)=>{
+  models.user.findOne({where: {id: id}}).then((user) => {
+      done(null, user)
+  })
+});
 // /* PASSPORT LOCAL AUTHENTICATION */
 
 const LocalStrategy = require('passport-local').Strategy;
@@ -98,34 +108,39 @@ passport.use(new LocalStrategy(
   }
 ));
 
+
+
+//LOCAL SERVER//
+
 app.post('/',
   passport.authenticate('local', { failureRedirect: '/error' }),
   function(req, res) {
     res.redirect('/login');
   });
 
-
-
-app.post("/signup", function (req, response) {
-  models.user.create({ username: req.body.username, password: encryptionPassword(req.body.password)})
-    .then(function (user) {
-      response.redirect('/login');
-      
-    });
+app.get('/signup', function(req, res) {
+  res.redirect('login')
 });
 
-//LOCAL PASSPORT
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.post('/signup', function (req, response) {
+  console.log("Line 115 working")
+  models.user.create({ username: req.body.username, password: encryptionPassword(req.body.password)})
+    .then(function (user) {
+      console.log("Signup working")
+      response.redirect('/login');
+    });
+});
 
 app.get('/login', function(req, res) {
   res.render('profile')
 });
 
-app.get('/signup', function(req, res) {
-  res.render('login')
-});
+
+
+//LOCAL PASSPORT
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // app.post("/signup", function (req, res){
 //   console.log("creating user");

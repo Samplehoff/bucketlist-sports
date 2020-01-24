@@ -33,9 +33,9 @@ passport.use(
                 password: profile.id
             }).then((newUser)=>{
                 console.log(newUser)
+                done(null, newUser);
             });
             // done(null, newUser);
-            done(null, newUser);
         }
     });
     })
