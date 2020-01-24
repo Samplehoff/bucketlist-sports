@@ -122,13 +122,13 @@ app.use(express.static(__dirname + '/public'));
 //   }
 //   });
 
-// //   app.get('/create_artist', function(req, res){ 
-// //     if (req.isAuthenticated()) {
-// //       res.redirect('create_artist');
-// //     } else {
-// //       res.send("not authorized.");
-// //     }
-// //     });
+//    app.get('/create_artist', function(req, res){ 
+//      if (req.isAuthenticated()) {
+//        res.redirect('create_artist');
+//      } else {
+//        res.send("not authorized.");
+//      }
+//      });
 //   app.get('/create_artist', function(req, res){ 
 //     if (req.isAuthenticated()) {
 //       res.redirect('create_artist');
