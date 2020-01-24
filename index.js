@@ -7,40 +7,32 @@ require('dotenv').config();
 const axios = require("axios");
 
 
-
-
-
-
-
-
-
 const mustacheExpress = require('mustache-express');
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', __dirname + '/public');
 
-// app.get('/', function(req, res){
-//   res.render('index.mustache');
-// });
 
-// app.get('/bucketlist', function(req, res){
-//   res.render('bucketlist.mustache');
-// });
 
-// app.get('/professional', function(req, res){
-//   models.stadiums.findAll({
-//     where:{
-//       type: "Professional"
-//     }
-//   }).then(stadiums =>{
-//     res.render('professional.mustache');
-//   })
+app.get('/all', function(req, res){
   
-// });
+  models.stadiums.findAll({
+    
 
+  }).then(stadiums => { 
+     res.render('all.mustache', {stadiums})
+  })
+})
 
+app.get('/', function(req,res){
+  res.render('bucketlist.mustache')
+})
 
-app.get('/professional', function(req, res){
+app.get('/mybucketlist', function(req, res){
+  res.render('mybucketlist.mustache')
+})
+
+app.get('/nfl', function(req, res){
   
   models.stadiums.findAll({
     where: {
@@ -48,16 +40,10 @@ app.get('/professional', function(req, res){
       sports: "football"
     }
 
-  }).then(stadiums => {
-      console.log(stadiums)
-     //res.render('testprofessional', {stadiums})
+  }).then(stadiums => { 
+     res.render('nfl.mustache', {stadiums})
   })
 })
-
-app.get('/', function(req,res){
-  res.render('testindex.mustache')
-})
-
 
 app.get('/college', function(req, res){
   models.stadiums.findAll({
@@ -65,7 +51,7 @@ app.get('/college', function(req, res){
       type: "College"
     }
   }).then(stadiums => {
-    res.render('testcollege.mustache', {stadiums})
+    res.render('college.mustache', {stadiums})
   })
 })
 
@@ -76,7 +62,7 @@ app.get('/mlb', function (req, res) {
       sports: "baseball"
     }
   }).then(stadiums => {
-    res.render('testmlb.mustache', {stadiums})
+    res.render('mlb.mustache', {stadiums})
   })
 })
 
@@ -87,7 +73,7 @@ app.get('/nba', function(req, res){
       sports: "basketball"
     }
   }).then(stadiums =>{
-    res.render('testnba.mustache', {stadiums})
+    res.render('nba.mustache', {stadiums})
   })
 })
 
@@ -98,23 +84,23 @@ app.get('/nhl', function(req, res){
       sports: "hockey"
     }
   }).then(stadiums =>{
-    res.render('testnhl.mustache', {stadiums})
+    res.render('nhl.mustache', {stadiums})
   })
 })
 
 
 
-// var pbkdf2 = require('pbkdf2');
-// var salt = process.env.SALT_KEY;
+var pbkdf2 = require('pbkdf2');
+var salt = process.env.SALT_KEY;
 
-// function encryptionPassword(password){
-//   var key = pbkdf2.pbkdf2Sync(
-//     password, salt, 36000, 256, 'sha256'
-//   );
-//   var hash = key.toString('hex');
-//   return hash;
-// }
-// app.use(session({secret: "dogs", resave: false, saveUninitialized: true}));
+function encryptionPassword(password){
+  var key = pbkdf2.pbkdf2Sync(
+    password, salt, 36000, 256, 'sha256'
+  );
+  var hash = key.toString('hex');
+  return hash;
+}
+app.use(session({secret: "dogs", resave: false, saveUninitialized: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -208,15 +194,24 @@ app.use(express.static(__dirname + '/public'));
 
 
 
-// app.post("/sign-up", function (req, response) {
-//   models.user.create({ username: req.body.username, password: encryptionPassword(req.body.password)})
-//     .then(function (user) {
-//       response.redirect('/');
+app.post("/sign-up", function (req, response) {
+   models.user.create({ userName: req.body.userName, password: encryptionPassword(req.body.password)})
+    .then(function (user) {
+      response.redirect('/');
       
-//     });
-// });
+    });
+});
 
 
+
+app.post("/mybucketlist", function (req, res){
+  models.bucketlist.create({
+    
+  })
+    .then(function (bucketlist) {
+      res.redirect('mybucketlist.mustache')
+    })
+})
 
 
 
