@@ -75,6 +75,7 @@ passport.serializeUser((user,done)=> {
   done(null, user.id);
 });
 
+
 passport.deserializeUser((id, done)=>{
   models.user.findOne({where: {id: id}}).then((user) => {
       done(null, user)
@@ -109,7 +110,6 @@ passport.use(new LocalStrategy(
 ));
 
 
-
 //LOCAL SERVER//
 
 app.post('/',
@@ -139,8 +139,15 @@ app.get('/login', function(req, res) {
 
 //LOCAL PASSPORT
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+
+app.post("/sign-up", function (req, response) {
+   models.user.create({ userName: req.body.userName, password: encryptionPassword(req.body.password)})
+    .then(function (user) {
+      response.redirect('/');
+      
+    });
+});
+
 
 // app.post("/signup", function (req, res){
 //   console.log("creating user");
@@ -149,6 +156,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // })
 
 
-app.use(express.static(__dirname + '/public'));
 
-
+app.post("/mybucketlist", function (req, res){
+  models.bucketlist.create({
+    
+  })
+    .then(function (bucketlist) {
+      res.redirect('mybucketlist.mustache')
+    })
+})
