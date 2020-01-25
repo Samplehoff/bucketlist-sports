@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "postgres",
-    "password": null,
-    "database": "bucketlist-db",
-    "host": "127.0.0.1",
+    "username": "yzresadd",
+    "password": "rqXg6rVjfc7dhJIRrDJipO3p0pknOXla",
+    "database": "yzresadd",
+    "host": "otto.db.elephantsql.com",
     "dialect": "postgres",
     "operatorsAliases": false
   },

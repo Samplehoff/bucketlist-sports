@@ -5,14 +5,34 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 require('dotenv').config();
 const axios = require("axios");
-
-
+const keys = require('./config/keys')
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20');
+const authRoutes = require('./routes/auth-routes')
+const profileRoutes = require('./routes/profile-routes')
 const mustacheExpress = require('mustache-express');
+const passportSetup = require('./config/passport-setup');
+const cookieSession = require('cookie-session');
+const cookieParser = require('cookie-parser')
+
+
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', __dirname + '/public');
 
+app.use(cookieSession({
+  maxAge: 24 * 60 * 60 * 1000,
+  keys: [keys.session.cookieKey]
+}));
 
+app.use(cookieParser());
+
+app.use(express.static(__dirname + '/public'));
+
+module.exports = app;
+
+app.use('/auth', authRoutes);
+app.use('/profile', profileRoutes);
 
 app.get('/all', function(req, res){
   
@@ -26,6 +46,7 @@ app.get('/all', function(req, res){
 
 app.get('/', function(req,res){
   res.render('bucketlist.mustache')
+  
 })
 
 app.get('/mybucketlist', function(req, res){
@@ -104,9 +125,60 @@ app.use(session({secret: "dogs", resave: false, saveUninitialized: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(express.static(__dirname + '/public'));
+// app.use(express.static(__dirname + '/public'));
 
+// /* PASSPORT LOCAL AUTHENTICATION */
 
+const LocalStrategy = require('passport-local').Strategy;
+
+passport.use(new LocalStrategy(
+  function (username, password, done) {
+    models.user.findOne({
+      where: {
+        username: username
+      }
+    }).then(function (user) {
+      if (!user) {
+        console.log("No user")
+        return done(null, false);
+      }
+
+      if (user.password != encryptionPassword(password)) {
+        console.log("Incorrect Password")
+        return done(null, false);
+      }
+      console.log("logged in")
+      return done(null, user);
+    }).catch(function (err) {
+      return done(err);
+    });
+  }
+));
+
+//LOCAL SERVER//
+
+app.post('/',
+  passport.authenticate('local', { failureRedirect: '/error' }),
+  function(req, res) {
+    res.redirect('/login');
+  });
+
+app.get('/signup', function(req, res) {
+  res.redirect('login')
+});
+
+app.post('/signup', function (req, response) {
+  console.log("Line 115 working")
+  models.user.create({ username: req.body.username, password: encryptionPassword(req.body.password)})
+    .then(function (user) {
+      console.log("Signup working")
+      response.redirect('/login');
+    });
+});
+
+app.get('/login', function(req, res) {
+  res.render('profile')
+});
 
 /*  PASSPORT SETUP  */
 
