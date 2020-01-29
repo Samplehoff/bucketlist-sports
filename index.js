@@ -15,6 +15,27 @@ const passportSetup = require('./config/passport-setup');
 const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser')
 
+
+
+app.engine('mustache', mustacheExpress());
+app.set('view engine', 'mustache');
+app.set('views', __dirname + '/public');
+
+app.use(cookieSession({
+  maxAge: 24 * 60 * 60 * 1000,
+  keys: [keys.session.cookieKey]
+}));
+
+app.use(cookieParser());
+
+app.use(express.static(__dirname + '/public'));
+
+module.exports = app;
+
+app.use('/auth', authRoutes);
+app.use('/profile', profileRoutes);
+
+
 var pbkdf2 = require('pbkdf2');
 var salt = process.env.SALT_KEY;
 
@@ -26,14 +47,17 @@ function encryptionPassword(password){
   return hash;
   }
 
+
 /*  PASSPORT SETUP  */
 
 app.engine('mustache', mustacheExpress());
 
-app.use(cookieSession({
-  maxAge: 24 * 60 * 60 * 1000,
-  keys: [keys.session.cookieKey]
-}));
+
+app.get('/', function(req,res){
+  res.render('bucketlist.mustache')
+  
+})
+
 
 app.use(cookieParser());
 
@@ -65,11 +89,62 @@ app.get('/', function(req, res){
   res.render('index.mustache');
 });
 
+
 app.get('/bucketlist', function(req, res){
   res.render('bucketlist.mustache');
 });
 
 
+const LocalStrategy = require('passport-local').Strategy;
+
+passport.use(new LocalStrategy(
+  function (username, password, done) {
+    models.user.findOne({
+      where: {
+        username: username
+      }
+    }).then(function (user) {
+      if (!user) {
+        console.log("No user")
+        return done(null, false);
+      }
+
+      if (user.password != encryptionPassword(password)) {
+        console.log("Incorrect Password")
+        return done(null, false);
+      }
+      console.log("logged in")
+      return done(null, user);
+    }).catch(function (err) {
+      return done(err);
+    });
+  }
+));
+
+//LOCAL SERVER//
+
+app.post('/',
+  passport.authenticate('local', { failureRedirect: '/error' }),
+  function(req, res) {
+    res.redirect('/login');
+  });
+
+app.get('/signup', function(req, res) {
+  res.redirect('login')
+});
+
+app.post('/signup', function (req, response) {
+  console.log("Line 115 working")
+  models.user.create({ username: req.body.username, password: encryptionPassword(req.body.password)})
+    .then(function (user) {
+      console.log("Signup working")
+      response.redirect('/login');
+    });
+});
+
+app.get('/login', function(req, res) {
+  res.render('profile')
+});
 
 passport.serializeUser((user,done)=> {
   done(null, user.id);
