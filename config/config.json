@@ -18,7 +18,7 @@
   "production": {
     "username": "postgres",
     "password": null,
-    "database": "bucketlist-db",
+    "database": "bucketlist",
     "host": "localhost",
     "dialect": "postgres",
     "operatorsAliases": false

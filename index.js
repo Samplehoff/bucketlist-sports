@@ -16,6 +16,7 @@ const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser')
 
 
+
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', __dirname + '/public');
@@ -34,82 +35,6 @@ module.exports = app;
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 
-app.get('/all', function(req, res){
-  
-  models.stadiums.findAll({
-    
-
-  }).then(stadiums => { 
-     res.render('all.mustache', {stadiums})
-  })
-})
-
-app.get('/', function(req,res){
-  res.render('bucketlist.mustache')
-  
-})
-
-app.get('/mybucketlist', function(req, res){
-  res.render('mybucketlist.mustache')
-})
-
-app.get('/nfl', function(req, res){
-  
-  models.stadiums.findAll({
-    where: {
-      type: "Professional",
-      sports: "football"
-    }
-
-  }).then(stadiums => { 
-     res.render('nfl.mustache', {stadiums})
-  })
-})
-
-app.get('/college', function(req, res){
-  models.stadiums.findAll({
-    where: {
-      type: "College"
-    }
-  }).then(stadiums => {
-    res.render('college.mustache', {stadiums})
-  })
-})
-
-app.get('/mlb', function (req, res) {
-  models.stadiums.findAll({
-    where: {
-      type: "Professional",
-      sports: "baseball"
-    }
-  }).then(stadiums => {
-    res.render('mlb.mustache', {stadiums})
-  })
-})
-
-app.get('/nba', function(req, res){
-  models.stadiums.findAll({
-    where: {
-      type: "Professional",
-      sports: "basketball"
-    }
-  }).then(stadiums =>{
-    res.render('nba.mustache', {stadiums})
-  })
-})
-
-app.get('/nhl', function(req, res){
-  models.stadiums.findAll({
-    where: {
-      type: "Professional",
-      sports: "hockey"
-    }
-  }).then(stadiums =>{
-    res.render('nhl.mustache', {stadiums})
-  })
-})
-
-
 
 var pbkdf2 = require('pbkdf2');
 var salt = process.env.SALT_KEY;
@@ -120,14 +45,55 @@ function encryptionPassword(password){
   );
   var hash = key.toString('hex');
   return hash;
-}
+  }
+
+
+/*  PASSPORT SETUP  */
+
+app.engine('mustache', mustacheExpress());
+
+
+app.get('/', function(req,res){
+  res.render('bucketlist.mustache')
+  
+})
+
+
+app.use(cookieParser());
+
 app.use(session({secret: "dogs", resave: false, saveUninitialized: true}));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 
-// app.use(express.static(__dirname + '/public'));
+app.set('view engine', 'mustache');
+app.set('views', __dirname + '/public');
 
-// /* PASSPORT LOCAL AUTHENTICATION */
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(express.static(__dirname + 'public'));
+
+app.listen(process.env.PORT, function () {
+  console.log('server listening on port ' + process.env.PORT + ' app name= ' + process.env.PROJECT_NAME);
+})
+
+module.exports = app;
+
+
+//SETUP ROUTES
+
+app.use('/auth', authRoutes);
+app.use('/profile', profileRoutes);
+
+app.get('/', function(req, res){
+  res.render('index.mustache');
+});
+
+
+app.get('/bucketlist', function(req, res){
+  res.render('bucketlist.mustache');
+});
+
 
 const LocalStrategy = require('passport-local').Strategy;
 
@@ -180,90 +146,73 @@ app.get('/login', function(req, res) {
   res.render('profile')
 });
 
-/*  PASSPORT SETUP  */
-
-// const passport = require('passport');
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-// app.get('/success', function(req, res){ 
-//   if (req.isAuthenticated()) {
-//     res.send("Welcome " + req.query.username + "!!")
-//   } else {
-//     res.send("not authorized.");
-//   }
-//   });
-
-// //   app.get('/create_artist', function(req, res){ 
-// //     if (req.isAuthenticated()) {
-// //       res.redirect('create_artist');
-// //     } else {
-// //       res.send("not authorized.");
-// //     }
-// //     });
-//   app.get('/create_artist', function(req, res){ 
-//     if (req.isAuthenticated()) {
-//       res.redirect('create_artist');
-//     } else {
-//       res.send("not authorized.");
-//     }
-//     });
+passport.serializeUser((user,done)=> {
+  done(null, user.id);
+});
 
 
-// app.get('/logout', function(req, res){
-//   if(req.isAuthenticated()) {
-//     console.log("user logged out");
-//     req.logOut();
-//     res.send("user logged out");
-//   } else {
-//     res.send("You don't have a session open")
-//   }
-// });
-
-// app.get('/error', (req, res) => res.send("error logging in"));
-
-// passport.serializeUser(function (user, cb) {
-//   cb(null, user.id);
-// });
-
-// passport.deserializeUser(function (id, cb) {
-//   models.user.findOne({ where: { id: id } }).then(function (user) {
-//     cb(null, user);
-//   });
-// });
-
+passport.deserializeUser((id, done)=>{
+  models.user.findOne({where: {id: id}}).then((user) => {
+      done(null, user)
+  })
+});
 // /* PASSPORT LOCAL AUTHENTICATION */
 
-// const LocalStrategy = require('passport-local').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
 
-// passport.use(new LocalStrategy(
-//   function (username, password, done) {
-//     models.user.findOne({
-//       where: {
-//         username: username
-//       }
-//     }).then(function (user) {
-//       if (!user) {
-//         return done(null, false);
-//       }
+passport.use(new LocalStrategy(
+  function (username, password, done) {
+    models.user.findOne({
+      where: {
+        username: username
+      }
+    }).then(function (user) {
+      if (!user) {
+        console.log("No user")
+        return done(null, false);
+      }
 
-//       if (user.password != encryptionPassword(password)) {
-//         return done(null, false);
-//       }
-//       return done(null, user);
-//     }).catch(function (err) {
-//       return done(err);
-//     });
-//   }
-// ));
+      if (user.password != encryptionPassword(password)) {
+        console.log("Incorrect Password")
+        return done(null, false);
+      }
+      console.log("logged in")
+      return done(null, user);
+    }).catch(function (err) {
+      return done(err);
+    });
+  }
+));
 
-// app.post('/',
-//   passport.authenticate('local', { failureRedirect: '/error' }),
-//   function(req, res) {
-//     res.redirect('/success');
 
-//   });
+//LOCAL SERVER//
 
+app.post('/',
+  passport.authenticate('local', { failureRedirect: '/error' }),
+  function(req, res) {
+    res.redirect('/login');
+  });
+
+app.get('/signup', function(req, res) {
+  res.redirect('login')
+});
+
+app.post('/signup', function (req, response) {
+  console.log("Line 115 working")
+  models.user.create({ username: req.body.username, password: encryptionPassword(req.body.password)})
+    .then(function (user) {
+      console.log("Signup working")
+      response.redirect('/login');
+    });
+});
+
+app.get('/login', function(req, res) {
+  res.render('profile')
+});
+
+
+
+//LOCAL PASSPORT
 
 
 app.post("/sign-up", function (req, response) {
@@ -275,6 +224,13 @@ app.post("/sign-up", function (req, response) {
 });
 
 
+// app.post("/signup", function (req, res){
+//   console.log("creating user");
+//   console.log(req.body);
+//   models.user.create({username: userName, password: password});
+// })
+
+
 
 app.post("/mybucketlist", function (req, res){
   models.bucketlist.create({
@@ -283,10 +239,4 @@ app.post("/mybucketlist", function (req, res){
     .then(function (bucketlist) {
       res.redirect('mybucketlist.mustache')
     })
-})
-
-
-
-app.listen(process.env.PORT, function () {
-  console.log('server listening on port ' + process.env.PORT + ' app name= ' + process.env.PROJECT_NAME);
 })
