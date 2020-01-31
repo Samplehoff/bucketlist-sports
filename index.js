@@ -84,9 +84,7 @@ module.exports = app;
 
 
 
-app.get('/', function(req, res){
-  res.render('bucketlist.mustache');
-});
+
 
 
 app.get('/mybucketlist', function(req, res){
