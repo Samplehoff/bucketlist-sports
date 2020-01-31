@@ -82,8 +82,7 @@ module.exports = app;
 
 //SETUP ROUTES
 
-app.use('/auth', authRoutes);
-app.use('/profile', profileRoutes);
+
 
 app.get('/', function(req, res){
   res.render('index.mustache');
@@ -130,7 +129,7 @@ app.post('/',
   });
 
 app.get('/signup', function(req, res) {
-  res.redirect('login')
+  res.redirect('/login')
 });
 
 app.post('/signup', function (req, response) {
