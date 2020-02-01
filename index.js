@@ -153,6 +153,8 @@ app.get('/nhl', function(req, res){
   })
 })
 
+
+
 const LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy(
