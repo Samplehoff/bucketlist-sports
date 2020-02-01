@@ -91,14 +91,14 @@ app.get('/mybucketlist', function(req, res){
   res.render('mybucketlist.mustache');
 });
 
-app.get('/all', function(req, res){
-  models.stadiums.findAll({
-    
-  })
-}).then(stadiums => {
-  console.log(stadiums)
-  res.render('all.mustache', {stadiums})
-})
+// app.get('/all', function(req, res){
+//   models.stadiums.findAll({
+
+//   })
+// }).then(stadiums => {
+//   console.log(stadiums)
+//   res.render('all.mustache', {stadiums})
+// })
 
 app.get('/nfl', function(req, res){
   
