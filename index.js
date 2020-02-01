@@ -92,8 +92,11 @@ app.get('/mybucketlist', function(req, res){
 });
 
 app.get('/all', function(req, res){
-  models.stadiums.findAll()
+  models.stadiums.findAll({
+    
+  })
 }).then(stadiums => {
+  console.log(stadiums)
   res.render('all.mustache', {stadiums})
 })
 
