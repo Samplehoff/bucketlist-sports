@@ -218,31 +218,6 @@ passport.deserializeUser((id, done)=>{
 });
 // /* PASSPORT LOCAL AUTHENTICATION */
 
-const LocalStrategy = require('passport-local').Strategy;
-
-passport.use(new LocalStrategy(
-  function (username, password, done) {
-    models.user.findOne({
-      where: {
-        username: username
-      }
-    }).then(function (user) {
-      if (!user) {
-        console.log("No user")
-        return done(null, false);
-      }
-
-      if (user.password != encryptionPassword(password)) {
-        console.log("Incorrect Password")
-        return done(null, false);
-      }
-      console.log("logged in")
-      return done(null, user);
-    }).catch(function (err) {
-      return done(err);
-    });
-  }
-));
 
 
 //LOCAL SERVER//
