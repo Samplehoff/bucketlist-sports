@@ -15,3 +15,4 @@ sequelize
 
 Local Postgres database
 
+# bucketlist-sports
